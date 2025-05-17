@@ -1,0 +1,493 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MIHRAB_BACK_DATABASE_URL")
+}
+
+model Application {
+  job_offer_id BigInt             @db.UnsignedBigInt
+  imam_id      BigInt             @db.UnsignedBigInt
+  status       ApplicationStatus  @default(pending)
+  message      String             @db.Text
+  created_at   BigInt             @db.UnsignedBigInt
+  updated_at   BigInt?            @db.UnsignedBigInt
+
+  @@id([job_offer_id, imam_id])
+  @@index([imam_id], map: "imam_id")
+  @@map("application")
+}
+
+model ImamContractType {
+  user_id       BigInt                           @db.UnsignedBigInt
+  contract_type ImamContractTypeContractType
+  created_at    BigInt                           @db.UnsignedBigInt
+
+  @@id([user_id, contract_type])
+  @@map("imam_contract_type")
+}
+
+model ImamDiploma {
+  user_id       BigInt @db.UnsignedBigInt
+  diploma_name  String @db.VarChar(100)
+  institution   String @db.VarChar(100)
+  city          String @db.VarChar(50)
+  year_obtained BigInt @db.UnsignedBigInt
+  description   String @db.Text
+  created_at    BigInt @db.UnsignedBigInt
+
+  @@id([user_id, diploma_name, institution])
+  @@map("imam_diploma")
+}
+
+model ImamExperience {
+  user_id    BigInt  @db.UnsignedBigInt
+  title      String  @db.VarChar(100)
+  city       String  @db.VarChar(50)
+  zip_code   String  @db.VarChar(10)
+  country    String  @db.VarChar(50)
+  latitude   Decimal @db.Decimal(10, 8)
+  longitude  Decimal @db.Decimal(11, 8)
+  start_date BigInt  @db.UnsignedBigInt
+  end_date   BigInt? @db.UnsignedBigInt
+  created_at BigInt  @db.UnsignedBigInt
+
+  @@id([user_id, title])
+  @@map("imam_experience")
+}
+
+model ImamLanguage {
+  imam_id    BigInt                 @db.UnsignedBigInt
+  language   ImamLanguageLanguage
+  level      ImamLanguageLevel
+  created_at BigInt                 @db.UnsignedBigInt
+
+  @@id([imam_id, language])
+  @@map("imam_language")
+}
+
+model ImamLike {
+  imam_id      BigInt @db.UnsignedBigInt
+  job_offer_id BigInt @db.UnsignedBigInt
+  created_at   BigInt @db.UnsignedBigInt
+
+  @@id([imam_id, job_offer_id])
+  @@index([job_offer_id], map: "job_offer_id")
+  @@map("imam_like")
+}
+
+model ImamQuranReading {
+  imam_id         BigInt                       @db.UnsignedBigInt
+  riwaya          ImamQuranReadingRiwaya
+  hizb_hifz       ImamQuranReadingHizbHifz
+  tajweed_mastery Boolean
+  ijazah          Boolean
+  created_at      BigInt                       @db.UnsignedBigInt
+
+  @@id([imam_id, riwaya])
+  @@map("imam_quran_reading")
+}
+
+model ImamSkill {
+  user_id    BigInt           @db.UnsignedBigInt
+  skill      ImamSkillSkill
+  created_at BigInt           @db.UnsignedBigInt
+
+  @@id([user_id, skill])
+  @@map("imam_skill")
+}
+
+model ImamWorkingHour {
+  user_id      BigInt                         @db.UnsignedBigInt
+  working_hour ImamWorkingHourWorkingHour
+  created_at   BigInt                         @db.UnsignedBigInt
+
+  @@id([user_id, working_hour])
+  @@map("imam_working_hour")
+}
+
+model ImamZone {
+  user_id    BigInt  @db.UnsignedBigInt
+  address    String  @db.VarChar(100)
+  city       String  @db.VarChar(50)
+  zip_code   String  @db.VarChar(10)
+  country    String  @db.VarChar(50)
+  latitude   Decimal @db.Decimal(10, 8)
+  longitude  Decimal @db.Decimal(11, 8)
+  created_at BigInt  @db.UnsignedBigInt
+
+  @@id([user_id, address, city, zip_code, country])
+  @@map("imam_zone")
+}
+
+model Invitation {
+  job_offer_id BigInt            @db.UnsignedBigInt
+  imam_id      BigInt            @db.UnsignedBigInt
+  message      String            @db.Text
+  status       InvitationStatus
+  created_at   BigInt            @db.UnsignedBigInt
+  updated_at   BigInt?           @db.UnsignedBigInt
+
+  @@id([job_offer_id, imam_id])
+  @@index([imam_id], map: "imam_id")
+  @@map("invitation")
+}
+
+model JobOffer {
+  id           BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  mosque_id    BigInt           @db.UnsignedBigInt
+  title        String           @db.VarChar(100)
+  description  String           @db.Text
+  remuneration Int              @db.UnsignedInt
+  urgent       Boolean          @default(false)
+  status       JobOfferStatus @default(draft)
+  created_at   BigInt           @db.UnsignedBigInt
+  updated_at   BigInt?          @db.UnsignedBigInt
+
+  @@index([mosque_id], map: "mosque_id")
+  @@map("job_offer")
+}
+
+model JobOfferBenefit {
+  job_offer_id BigInt                    @db.UnsignedBigInt
+  benefit      JobOfferBenefitBenefit
+  created_at   BigInt                    @db.UnsignedBigInt
+
+  @@id([job_offer_id, benefit])
+  @@map("job_offer_benefit")
+}
+
+model JobOfferContractType {
+  job_offer_id  BigInt                                @db.UnsignedBigInt
+  contract_type JobOfferContractTypeContractType
+  created_at    BigInt                                @db.UnsignedBigInt
+
+  @@id([job_offer_id, contract_type])
+  @@map("job_offer_contract_type")
+}
+
+model JobOfferLanguage {
+  job_offer_id BigInt                      @db.UnsignedBigInt
+  language     JobOfferLanguageLanguage
+  level        JobOfferLanguageLevel
+  created_at   BigInt                      @db.UnsignedBigInt
+
+  @@id([job_offer_id, language])
+  @@map("job_offer_language")
+}
+
+model JobOfferQuranReading {
+  job_offer_id    BigInt                            @db.UnsignedBigInt
+  riwaya          JobOfferQuranReadingRiwaya
+  tajweed_mastery Boolean
+  ijazah          Boolean
+  created_at      BigInt                            @db.UnsignedBigInt
+
+  @@id([job_offer_id, riwaya])
+  @@map("job_offer_quran_reading")
+}
+
+model JobOfferSkill {
+  job_offer_id BigInt                @db.UnsignedBigInt
+  skill        JobOfferSkillSkill
+  created_at   BigInt                @db.UnsignedBigInt
+
+  @@id([job_offer_id, skill])
+  @@map("job_offer_skill")
+}
+
+model JobOfferWorkingHour {
+  job_offer_id BigInt                              @db.UnsignedBigInt
+  working_hour JobOfferWorkingHourWorkingHour
+  created_at   BigInt                              @db.UnsignedBigInt
+
+  @@id([job_offer_id, working_hour])
+  @@map("job_offer_working_hour")
+}
+
+model Mosque {
+  id                  BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id             BigInt        @db.UnsignedBigInt
+  name                String        @db.VarChar(100)
+  picture             Bytes?        @db.MediumBlob
+  organization_name   String?       @db.VarChar(100)
+  address             String        @db.VarChar(100)
+  city                String        @db.VarChar(50)
+  zip_code            String        @db.VarChar(10)
+  country             String        @db.VarChar(50)
+  latitude            Decimal       @db.Decimal(10, 8)
+  longitude           Decimal       @db.Decimal(11, 8)
+  phone               String?       @db.VarChar(255)
+  max_capacity        Int?
+  status              MosqueStatus @default(pending)
+  supporting_document Bytes         @db.MediumBlob
+  created_at          BigInt        @db.UnsignedBigInt
+  updated_at          BigInt?       @db.UnsignedBigInt
+
+  @@index([user_id], map: "user_id")
+  @@map("mosque")
+}
+
+model MosqueManagerLike {
+  mosque_manager_id BigInt @db.UnsignedBigInt
+  imam_id           BigInt @db.UnsignedBigInt
+  created_at        BigInt @db.UnsignedBigInt
+
+  @@id([mosque_manager_id, imam_id])
+  @@index([imam_id], map: "imam_id")
+  @@map("mosque_manager_like")
+}
+
+model MosqueService {
+  mosque_id    BigInt                      @db.UnsignedBigInt
+  service_name MosqueServiceServiceName
+  created_at   BigInt                      @db.UnsignedBigInt
+  updated_at   BigInt?                     @db.UnsignedBigInt
+
+  @@id([mosque_id, service_name])
+  @@map("mosque_service")
+}
+
+model MosqueSocialMedia {
+  mosque_id  BigInt                       @db.UnsignedBigInt
+  platform   MosqueSocialMediaPlatform
+  url        String                       @db.VarChar(255)
+  created_at BigInt                       @db.UnsignedBigInt
+  updated_at BigInt?                      @db.UnsignedBigInt
+
+  @@id([mosque_id, platform])
+  @@map("mosque_social_media")
+}
+
+model Notification {
+  id         BigInt            @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id    BigInt            @db.UnsignedBigInt
+  type       NotificationType
+  message    String            @db.Text
+  url        String            @db.VarChar(255)
+  is_read    Boolean           @default(false)
+  created_at BigInt            @db.UnsignedBigInt
+
+  @@index([user_id], map: "user_id")
+  @@map("notification")
+}
+
+model ProfileAdmin {
+  user_id    BigInt  @id @db.UnsignedBigInt
+  created_at BigInt  @db.UnsignedBigInt
+  updated_at BigInt? @db.UnsignedBigInt
+
+  @@map("profile_admin")
+}
+
+model ProfileImam {
+  user_id    BigInt  @id @db.UnsignedBigInt
+  bio        String? @db.Text
+  created_at BigInt  @db.UnsignedBigInt
+  updated_at BigInt? @db.UnsignedBigInt
+
+  @@map("profile_imam")
+}
+
+model ProfileMosqueManager {
+  user_id    BigInt                          @id @db.UnsignedBigInt
+  position   ProfileMosqueManagerPosition
+  created_at BigInt                          @db.UnsignedBigInt
+  updated_at BigInt?                         @db.UnsignedBigInt
+
+  @@map("profile_mosque_manager")
+}
+
+model User {
+  id            BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  email         String      @unique(map: "email") @db.VarChar(50)
+  password_salt String?     @db.VarChar(255)
+  password_hash String?     @db.VarChar(255)
+  first_name    String      @db.VarChar(50)
+  last_name     String      @db.VarChar(50)
+  photo         Bytes?      @db.MediumBlob
+  status        UserStatus  @default(active)
+  created_at    BigInt      @db.UnsignedBigInt
+  updated_at    BigInt?     @db.UnsignedBigInt
+
+  @@map("user")
+}
+
+enum ImamContractTypeContractType {
+  permanent
+  fixed_term
+  occasional
+}
+
+enum ImamLanguageLanguage {
+  arabic
+  french
+}
+
+enum ImamQuranReadingRiwaya {
+  hafs
+  warsh
+  qalun
+  al_duri
+  al_susi
+  shubah
+  khalaf
+}
+
+enum ImamSkillSkill {
+  five_prayers
+  jumuah
+  aid_prayer
+  tarawih
+  quran_classes
+  conferences
+  questions_answers
+}
+
+enum ImamWorkingHourWorkingHour {
+  full_time
+  part_time
+}
+
+enum JobOfferBenefitBenefit {
+  apartment
+  office
+  library
+  administrative_assistant
+}
+
+enum JobOfferContractTypeContractType {
+  permanent
+  fixed_term
+  occasional
+}
+
+enum JobOfferLanguageLanguage {
+  arabic
+  french
+}
+
+enum JobOfferQuranReadingRiwaya {
+  hafs
+  warsh
+  qalun
+  al_duri
+  al_susi
+  shubah
+  khalaf
+}
+
+enum JobOfferSkillSkill {
+  five_prayers
+  jumuah
+  aid_prayer
+  tarawih
+  quran_classes
+  conferences
+  questions_answers
+}
+
+enum JobOfferWorkingHourWorkingHour {
+  full_time
+  part_time
+}
+
+enum MosqueServiceServiceName {
+  ablutions
+  women_space
+  children_classes
+  adult_classes
+  janaza
+  parking
+  aid_prayer
+}
+
+enum MosqueSocialMediaPlatform {
+  website
+  instagram
+  facebook
+  youtube
+  twitter
+}
+
+enum ProfileMosqueManagerPosition {
+  president
+  secretary
+  treasurer
+  mosque_manager
+}
+
+enum ApplicationStatus {
+  pending
+  rejected
+  accepted
+  canceled
+}
+
+enum ImamLanguageLevel {
+  beginner
+  intermediate
+  advanced
+  fluent
+}
+
+enum ImamQuranReadingHizbHifz {
+  zero_ten
+  ten_twenty
+  twenty_thirty
+  thirty_forty
+  forty_fifty
+  fifty_sixty
+  hafiz
+}
+
+enum JobOfferLanguageLevel {
+  beginner
+  intermediate
+  advanced
+  fluent
+}
+
+enum JobOfferQuranReadingHizbHifz {
+  zero_ten
+  ten_twenty
+  twenty_thirty
+  thirty_forty
+  forty_fifty
+  fifty_sixty
+  hafiz
+}
+
+enum NotificationType {
+  application
+  job_offer
+  like
+  notification
+  invitation
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+}
+
+enum JobOfferStatus {
+  draft
+  published
+  archived
+}
+
+enum MosqueStatus {
+  pending
+  approved
+  rejected
+}
+
+enum UserStatus {
+  active
+  suspended
+  disabled
+}
