@@ -1,10 +1,10 @@
 {
   "name": "mihrab-back",
   "version": "1.0.0",
-  "description": "",
-  "author": "",
+  "description": "Mihrab Backend",
+  "author": "Ayoub KHEMISSI",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MAWAQIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
