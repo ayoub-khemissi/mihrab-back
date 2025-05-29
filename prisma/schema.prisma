@@ -309,6 +309,7 @@ model User {
   last_name     String      @db.VarChar(50)
   photo         Bytes?      @db.MediumBlob
   status        UserStatus  @default(active)
+  role          UserRole?
   created_at    BigInt      @db.UnsignedBigInt
   updated_at    BigInt?     @db.UnsignedBigInt
 
@@ -484,6 +485,12 @@ enum MosqueStatus {
   pending
   approved
   rejected
+}
+
+enum UserRole {
+  imam
+  mosque_manager
+  admin
 }
 
 enum UserStatus {

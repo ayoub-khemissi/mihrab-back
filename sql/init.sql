@@ -294,6 +294,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `last_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `photo` mediumblob,
   `status` enum('active','suspended','disabled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
+  `role` enum('imam','mosque_manager','admin') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` bigint UNSIGNED NOT NULL,
   `updated_at` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
